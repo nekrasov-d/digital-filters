@@ -7,7 +7,7 @@ as is (adaptive filters, for expample).
 
 But currently the workflow is like this:
 
-  0. Chose filter/architecture
+  0. Choose filter/architecture
   1. Edit parameters in filter_design.py
   2. Run filter_design.py
   3. If it was successfull, then some output files (verilog headers/ memory init
@@ -41,7 +41,7 @@ Goals:
 
 ### filter_design.py ###
 
-All the dessigns here (so far) requires some initializing stuff. This program
+All the dessigns here (so far) require some initializing stuff. This program
 is supposed to generate all this stuff. It doesn't have any command line
 arguments. To use it you need to edit it. Find "Conrol point" section in the
 main loop. Parameter names are self-documented. Select filter type, band, etc.
@@ -90,7 +90,7 @@ IIR kind is populated by some architectures. Some of them (monolythic) are
 supposed to be general, but others are likely specified and based on some
 observation of what scipy.iirfilter() returns in BUTTERWORTH mode. It MAY work
 if you use another tools to generate coefficints or another approximations. And
-it would be great as a research point. But for now I suggest to use
+it would be great as a research point to try it. But for now I suggest to use
 filter_design.py program to generate filter coefficients, it makes all checks so
 that if it doesn't fail with message, it means that RTL design should work (it
 is strictly necessary to run testbench simulation anyway).
@@ -99,6 +99,7 @@ So what are these observatons? I used to run scipy.iirfilter() with different
 parameters and found out that most of the coefficients actually has fixed
 values, or at least fixed range values. Here is the typical output (formatted):
 
+```
 +--------+--------------+--------------+--------------+--------------+--------------+--------------+
 |Section |     b0       |      b1      |     b2       |     a0       |      a1      |     a2       |
 +--------+--------------+--------------+--------------+--------------+--------------+--------------+
@@ -107,6 +108,7 @@ values, or at least fixed range values. Here is the typical output (formatted):
 |   2    | 1.000000e+00 | 2.000000e+00 | 1.000000e+00 | 1.000000e+00 | 7.352009e-01 | 3.626168e-01 |
 |   3    | 1.000000e+00 | 2.000000e+00 | 1.000000e+00 | 1.000000e+00 | 9.268586e-01 | 7.178339e-01 |
 +--------+--------------+--------------+--------------+--------------+--------------+--------------+
+```
 
   1. b0 and b2 are always 1 for all sections other than 0th
   2. b1 either 2 or -2 for all sections other than 0th (depends on zero_pass parameter)
@@ -199,6 +201,7 @@ meanings, wait for the results.
 
 iir_test.py workflow example:
 
+```
      | manual parameters set                                                               ^ log
      |                                                                                     |
   +--|----------------------------------------------------------------------------------------+
@@ -232,7 +235,7 @@ iir_test.py workflow example:
                                                 |             RTL CODE                |
                                                 |                                     |
                                                 +-------------------------------------+
-
+```
 
 ### Authors ###
 
