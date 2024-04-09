@@ -30,6 +30,11 @@
 #
 # Needs a Linux distro and modelsim. vsim binary must be visible through $PATH
 #
+# This is rather an example, it is expected that it would be automatically
+# paremeterized to automatically run in loop through a set of parameters, or
+# tuned for a individual case if a filter instance is supposed to be configured
+# once per project and never changed later.
+#
 # Run:
 #   python3 iir_test.py
 #

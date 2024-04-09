@@ -95,6 +95,11 @@ filter_design.py program to generate filter coefficients, it makes all checks so
 that if it doesn't fail with message, it means that RTL design should work (it
 is strictly necessary to run testbench simulation anyway).
 
+These does't have any specific FPGA resourse necessary/desirible
+(like DSP48 blocks), so it could be used for ASICs as well (though in this case
+it would reqire much much more thorough verification then just seeing NMSE for
+some cases)
+
 So what are these observatons? I used to run scipy.iirfilter() with different
 parameters and found out that most of the coefficients actually has fixed
 values, or at least fixed range values. Here is the typical output (formatted):
@@ -129,6 +134,14 @@ generates and receives a1 and a2 vaues that are inverted relative to DIRECT
 form. But the RTL design is made with DIRECT form, so if scipy is used to
 generate it's coefficients, then a1 and a2 must be inverted. filter_design.py
 does this thing, it returns values for DIRECT form, NOT TRANSPOSED.
+
+TROUBLESHOOTING:
+  * If for some reason designed filter works somehow in simulation, but show
+    rather poor performance (peak errors more than 1% for 16 and more bit width
+    data, NMSE more than -20 dB, ...) try to use "Overhead Bits" (OB) parameter
+    in looped_sos_iir.sv or cascased_sos_iir.sv. It is 0 by default, but
+    sometimes it really helps. Possible explanation is there, in file
+    annotations.
 
 Particular implementations are:
 

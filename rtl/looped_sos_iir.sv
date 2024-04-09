@@ -42,8 +42,8 @@
  * Let's suppose ORDER = 20 ( implies 10 second order sections ), CW=16
  * COEFFICIENTS parameter port should receive an array like this:
  *
- *      B0        B1       B2       A1[0]          A1[9]     A2[0]          A2[9]
- * { 16'hdead, 16'dbeef, 16'1234, 16'habcd, ..., 16'h1111, 16'haaaa, ..., 16'habab }
+ *      A2[9]         A2[0]     A1[9]           A1[0]      B2        B1        B0
+ * { 16'hdead, ..., 16'dbeef, 16'h1234,  ...,  16'habcd, 16'h1111, 16'haaaa, 16'habab }
  *
  *
  * Values here are random, of course. All these values are signed fixed point values
