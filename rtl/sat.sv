@@ -24,14 +24,16 @@
  * ---------------------------------------------------------------------------------
  *
  * Simple combinational saturation module. Expected to be nested:
- *  `include "sat.sv"
+ *  `include "sat.sv" 
+ *
+ * XXX: nested module feature is not supported in quartus
  *
  * -- Dmitry Nekrasov <bluebag@yandex.ru>   Sun, 07 Apr 2024 14:10:40 +0300
  */
 
 `include "defines.vh"
 
-module sat #( parameter IW = 10, parameter OW = 9 ) ( input [IW-1:0] x, output logic[OW-1:0] y );
+module filters_sat #( parameter IW = 10, parameter OW = 9 ) ( input [IW-1:0] x, output logic[OW-1:0] y );
   localparam DISCARDED_BITS = IW-OW;
   logic sat_case;
   assign sat_case = x[IW-2 -: DISCARDED_BITS] != {DISCARDED_BITS{`sign(x)}};

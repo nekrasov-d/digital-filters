@@ -52,7 +52,7 @@ module iir #(
   parameter                         ORDER                  = 16,
   parameter                         DW                     = 16, // Data width
   parameter                         CW                     = 16, // Coefficints width
-  parameter                         CW_AMOUNT              = $ceil(ORDER/2)*2 + 3, // Do not override!
+  parameter                         CW_AMOUNT              = (ORDER/2)*2 + 3, // Do not override!
   parameter [CW_AMOUNT-1:0][CW-1:0] SOS_ARCH_COEFFS        = '{default:0},
   parameter [ORDER*2-1  :0][CW-1:0] MONOLYTHIC_ARCH_COEFFS = '{default:0}
 ) (

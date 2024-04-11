@@ -82,8 +82,8 @@ module looped_sos_iir #(
   parameter                         ORDER        = 16,
   parameter                         DW           = 16, // Data width
   parameter                         CW           = 16, // Coefficints width
-  parameter                         OB           = 0,  // Overhead bits. See annotation
-  parameter                         CW_AMOUNT    = $ceil(ORDER/2)*2 + 3, // Do not override!
+  parameter                         OB           = 2,  // Overhead bits. See annotation
+  parameter                         CW_AMOUNT    = (ORDER/2)*2 + 3, // Do not override!
   parameter [CW_AMOUNT-1:0][CW-1:0] COEFFICIENTS = '{default:0},
   parameter                         RAMSTYLE     = "logic"
 ) (
@@ -96,7 +96,8 @@ module looped_sos_iir #(
 );
 
 // Little nested module to reduce bitwidth without overflow
-`include "sat.sv"
+// XXX: nested module declaration is not supported in quartus
+//`include "sat.sv"
 // How many second order sections do we have
 localparam NSECTIONS = ORDER / 2;
 localparam CNT_W = $clog2( NSECTIONS );
@@ -182,12 +183,12 @@ always_ff @( posedge clk_i )
     if( wren )
       z0 <= one_section_loop;
 
-// Another nested module declaration
-`include "ram.sv"
+// Another nested module declaration XXX: not supported in quartus
+//`include "ram.sv"
 
 // Most likely we won't need real RAM here, it's just registers
 // RAMSTYLE == "logic" forces synthesizer to use registers
-ram #(
+filters_ram #(
   .DWIDTH   ( DW+OB      ),
   .NWORDS   ( NSECTIONS ),
   .RAMSTYLE ( "logic"   )
@@ -200,7 +201,7 @@ ram #(
   .q        ( z1        )
 );
 
-ram #(
+filters_ram #(
   .DWIDTH   ( DW+OB    ),
   .NWORDS   ( NSECTIONS ),
   .RAMSTYLE ( "logic"   )
@@ -234,7 +235,7 @@ assign b2_mult = z2      * b2;
 
 assign ffs = b0_mult + b1_mult + b2_mult;
 
-sat #( .IW( $bits(ffs) ), .OW( $bits(one_section_loop) ) ) feedforward_sat ( ffs, one_section_loop );
+filters_sat #( .IW( $bits(ffs) ), .OW( $bits(one_section_loop) ) ) feedforward_sat ( ffs, one_section_loop );
 
 //*********************************************************************************
 // Feedback path
@@ -245,12 +246,12 @@ assign feedback_sum = z0 + a1_mult + a2_mult;
 
 assign fbs = ( feedback_sum >> (CW-1) ) + `u(feedback_sum[CW-2]);
 
-sat #( .IW( $bits(fbs) ), .OW( DW+OB ) ) feedback_sat ( fbs, fbs_sat );
+filters_sat #( .IW( $bits(fbs) ), .OW( DW+OB ) ) feedback_sat ( fbs, fbs_sat );
 
 //*********************************************************************************
 // Output
 
-sat #( .IW( $bits(one_section_loop) ), .OW( $bits(osl_sat) ) ) output_sat (one_section_loop, osl_sat);
+filters_sat #( .IW( $bits(one_section_loop) ), .OW( $bits(osl_sat) ) ) output_sat (one_section_loop, osl_sat);
 
 always_ff @( posedge clk_i )
   if( last_section_d )

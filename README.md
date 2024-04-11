@@ -1,5 +1,21 @@
 # digital-filters #
 
+```
+Branch notes
+------------
+
+This is "gabella" branch and it was created to adapt this library to gabella
+project ( https://github.com/nekrasov-d/gabella). Differences:
+  * Because Quartus doesn't support nested module declaration I had to cancel
+    this idea
+  * But this caused name conflicts, because another submodules also have 'ram'
+    'rom' and 'sat' modules and that modules might require different features.
+    So I renamed all generic modules here ('ram --> filters_ram')
+  * It's also convenient to keep generated memory initialization files for
+    gabella project here to not to flood with them in the main branch
+
+```
+
 RTL (Verilog) digital filter library based on Python scipy library output. Yet.
 Maybe I will add filters, based on some other filter design tool outputs later,
 or maybe some filters that won't require some offline calculated stuff and work

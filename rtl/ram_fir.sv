@@ -130,7 +130,7 @@ always_comb
 
 assign wren   = state==RUN_S || state==LAST_OP_S;
 
-ram #(
+filters_ram #(
   .DWIDTH       ( DW            ),
   .AWIDTH       ( RAM_AWIDTH    ),
   .RAMSTYLE     ( RAMSTYLE      )
@@ -143,7 +143,7 @@ ram #(
   .q            ( value         )
 );
 
-rom #(
+filters_rom #(
   .DWIDTH       ( DW            ),
   .AWIDTH       ( RAM_AWIDTH    ),
   .INIT_FILE    ( COEFFS_FILE   )

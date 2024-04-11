@@ -191,13 +191,13 @@ if __name__ == '__main__':
     # Control point:
     GENERATE_FIR             = False
     GENERATE_IIR             = True
-    NTAPS                    = 8
+    NTAPS                    = 4
     FSAMPLE                  = 44100
-    CUTOFF                   = FSAMPLE//4 + 4000
-    COEFFICIENT_WIDTH        = 8
+    CUTOFF                   = 2500
+    COEFFICIENT_WIDTH        = 24
     FILTER_TYPE              = ( "lowpass", "highpass" )[0]
     RAM_FIR_ROM_FNAME        = None # 'your_meory_initializing_file_here.mem'
-    IIR_VERILOG_HEADER_FNAME = None # 'test.sv'
+    IIR_VERILOG_HEADER_FNAME = "2500_hz_antialiasing_iir.v" 
     DRAW_PLOT_EN             = True
     ###########################################################
     sos, b = None, None
@@ -217,6 +217,8 @@ if __name__ == '__main__':
                            )
 
     if( DRAW_PLOT_EN ):
+        sos[:,4] = -sos[:,4]
+        sos[:,5] = -sos[:,5]
         draw_plot( b, sos )
 
 
