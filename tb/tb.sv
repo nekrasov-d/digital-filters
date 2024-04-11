@@ -186,14 +186,12 @@ initial
 
 //***************************************************************************
 
-`define IIR
-
 `ifdef RAM_FIR
   ram_fir #(
-    .DWIDTH             ( DATA_WIDTH                  ),
+    .DW                 ( DATA_WIDTH                  ),
     .LEN                ( ORDER                       ),
     .COEFFS_FILE        ( RAM_FIR_INIT_FILE_NAME      ),
-    .RAMSTYLE           ( "M9K"                       )
+    .RAMSTYLE           ( "default"                   )
 `endif
 
 `ifdef IIR

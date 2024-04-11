@@ -91,7 +91,8 @@ def gen_ram_fir( ntaps, cutoff, cw, filter_type, rom_fname=None ):
         for i in range( len( b_2sc ) ):
           f.write( f"{fmt(b_2sc[i])}\n" )
         f.close()
-    return b
+    # return floored value
+    return np.fix( b * 2**(cw-1) ) / 2**(cw-1)
 
 
 # Returns a1 and a2 for DIRECT FORM, not for TRANSPOSED form!!

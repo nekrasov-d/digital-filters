@@ -3,3 +3,6 @@ tb/log
 tb/work
 tb/transcript
 tb/vsim.wlf
+tb/vish_stacktrace.vstf
+tb/wave.do
+
