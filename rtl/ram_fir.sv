@@ -44,7 +44,7 @@
 `include "defines.vh"
 
 module ram_fir #(
-  parameter DW      = 16,
+  parameter DW          = 16,
   parameter LEN         = 511,
   parameter COEFFS_FILE = "none.mem",
   parameter RAMSTYLE    = "M9K"
@@ -103,8 +103,8 @@ logic [DW-1:0]         coeff;
 logic                  wren;
 
 logic signed [DW*2-1:0] mult;
-logic [DW-1:0]          mult_bitshift;
-logic [DW-1:0]          accum;
+logic [DW:0]            mult_bitshift;
+logic [DW:0]            accum;
 
 always_ff @( posedge clk_i )
   if( sample_valid_i )
@@ -153,8 +153,10 @@ rom #(
   .rddata_o     ( coeff         )
 );
 
+// Scale back to DW-1 not to DW bits because coefficients are actually
+// normed to 1 where 1 is 2**(DW-1) (to hold also negative part of the range)
 assign mult          = `s(value) * `s(coeff);
-assign mult_bitshift = mult >> DW;
+assign mult_bitshift = mult >> (DW-1);
 
 always_ff @( posedge clk_i )
   accum <= state==RUN_S ? accum + mult_bitshift : '0;
@@ -164,7 +166,12 @@ always_ff @( posedge clk_i )
     data_o <= '0;
   else
     if( state==LAST_OP_S )
-      data_o <= accum;
+      data_o <= {`sign(accum), accum[DW-2:0]};
+
+// synopsys translate_off
+always_ff @( posedge clk_i )
+  data_valid_o <= ( state==LAST_OP_S );
+// synopsys translate_on
 
 endmodule
 
