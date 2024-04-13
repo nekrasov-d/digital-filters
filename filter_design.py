@@ -217,6 +217,10 @@ if __name__ == '__main__':
                            )
 
     if( DRAW_PLOT_EN ):
+        if( sos is not None ):
+            # Because sosfreqz expects coefficients for transposed form
+            sos[:,4] = -sos[:,4]
+            sos[:,5] = -sos[:,5]
         draw_plot( b, sos )
 
 

@@ -65,6 +65,13 @@ CLK_PER_SAMPLE           = NTAPS//2 + 10
 SHOW_PSD                 = False
 TESTBENCH_MODE           = ( "manual", "automatic" )[1]
 
+RTL_FILES = [
+  "../rtl/sat.sv",
+  "../rtl/ram.sv",
+  "../rtl/looped_sos_iir.sv",
+  "../rtl/iir.sv"
+]
+
 ############################################################################
 # Get filter coefficients
 
@@ -89,6 +96,11 @@ f.write(f'parameter CLK_PER_SAMPLE    = {CLK_PER_SAMPLE};\n')
 f.write(f'parameter TEST_DATA_FNAME   = "input.txt";\n')
 f.write(f'parameter REF_DATA_FNAME    = "ref.txt";\n')
 f.write(f'parameter TESTBENCH_MODE    = "{TESTBENCH_MODE}";\n')
+f.close()
+
+f = open( "files", "w" )
+for i in range(len(RTL_FILES)):
+    f.write(f"{RTL_FILES[i]}\n")
 f.close()
 
 ############################################################################
@@ -157,6 +169,7 @@ if( TESTBENCH_MODE == "automatic" ):
     try:
         os.remove(IIR_VERILOG_HEADER_FNAME)
         os.remove("testbench_parameters.v")
+        os.remove("files")
         os.remove("input.txt")
         os.remove("ref.txt")
         os.remove("score.txt")

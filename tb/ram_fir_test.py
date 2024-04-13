@@ -65,6 +65,12 @@ CLK_PER_SAMPLE           = NTAPS + 10
 SHOW_PSD                 = False
 TESTBENCH_MODE           = ( "manual", "automatic" )[1]
 
+RTL_FILES = [
+  "../rtl/ram.sv",
+  "../rtl/rom.sv",
+  "../rtl/fam_fir.sv"
+]
+
 ############################################################################
 # Get filter coefficients
 
@@ -90,6 +96,10 @@ f.write(f'parameter REF_DATA_FNAME         = "ref.txt";\n')
 f.write(f'parameter TESTBENCH_MODE         = "{TESTBENCH_MODE}";\n')
 f.close()
 
+f = open( "files", "w" )
+for i in range(len(RTL_FILES)):
+    f.write(f"{RTL_FILES[i]}\n")
+f.close()
 
 ############################################################################
 # Prepare test data
@@ -156,6 +166,7 @@ if( TESTBENCH_MODE == "automatic" ):
     f.close()
     # clean
     try:
+        os.remove("files")
         os.remove("test.mem")
         os.remove("testbench_parameters.v")
         os.remove("input.txt")

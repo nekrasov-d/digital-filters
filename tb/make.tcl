@@ -1,4 +1,3 @@
-#!bin/pythion3
 #
 # MIT License
 #
@@ -33,12 +32,9 @@
 vlib work
 quit -sim
 
-vlog -quiet -sv ../rtl/sat.sv
-vlog -quiet -sv ../rtl/ram.sv
-vlog -quiet -sv ../rtl/looped_sos_iir.sv
-vlog -quiet -sv ../rtl/iir.sv
-
+vlog -quiet -sv -f files
 vlog -quiet -sv tb.sv
+
 vsim -quiet tb -suppress 3116 -suppress 3691
 
 if [file exists "wave.do"] {
