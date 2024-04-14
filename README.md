@@ -211,7 +211,7 @@ Pros:
 Cons:
   * Hangs in a busy state N cycles where N is the amount of sections
 
-Scheme: img/looped_sos_iir.png
+![img/looped_sos_iir.png](https://raw.githubusercontent.com/nekrasov-d/digital-filters/main/img/looped_sos_iir.png)
 
 Usage: May be used with iir.sv wrapper and "LOOPED_SOS" value for ARCHITECTURE parameter
 
