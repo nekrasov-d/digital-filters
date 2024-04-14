@@ -20,10 +20,11 @@ so I will do more detailed description for each filter in particular.
 Designs:
 
   * FIR
-    - RAM FIR (rtl/ram_fir.sv) | sim/hardware verification ok
+    - boxcar (rtl/boxcar_filter.sv) | hardware ok
+    - RAM FIR (rtl/ram_fir.sv) | sim/hardware ok
   * IIR
     - second order sections arch
-      - looped SOS IIR (rtl/looped_sos_iir.sv)     | sim/hardware verification ok
+      - looped SOS IIR (rtl/looped_sos_iir.sv)     | sim/hardware ok
       - cascaded SOS IIR (rtl/cascaded_sos_iir.sv) | in progress...
     - monolythic arch
       - in plan...
@@ -51,7 +52,28 @@ Supported designs for now:
   * RAM FIR
   * Looped/cascaded sos IIR
 
-### RAM FIR ###
+### FIR ###
+
+Finite impulse response filters
+
+#### boxcar ####
+
+Status:
+  * Done
+  * Verified in hardware
+
+The most trivial filter here, so simple I even did not simulate it. You just
+can't fail such simple design.
+
+Boxcar, aka MOVING AVERAGE, is a trivial low-pass fir filter, where all
+coefficients are equal and their sum is equal to 1. Actually, it is a sum of all
+N samples in window divided by their amount.
+
+This filter draws some attetion because if it's order, or tap amount, is a power
+of 2, then we don't need any multiplier, only rolling sum and then right
+bitshift.
+
+#### RAM FIR ####
 
 Status:
   * Done
@@ -84,7 +106,11 @@ Spec:
 Verification:
   * Common for all filters yet, see specialized section (Testbench)
 
-### SOS IIR ###
+### IIR ###
+
+Infinity impulse response filters
+
+#### SOS IIR ####
 
 IIR kind is populated by some architectures. Some of them (monolythic) are
 supposed to be general, but others are likely specified and based on some
@@ -143,9 +169,32 @@ TROUBLESHOOTING:
     sometimes it really helps. Possible explanation is there, in file
     annotations.
 
+Insights:
+  1. Due to feedback accumulation, IIR filters are very sensitive to rounding
+    errors and easily accumulate them if error DC is not balanced (well, no
+    surprise actually). My first attempt to place roundings failed and filter
+    became unstable (it has nothing to do with poles). The second attempt (you
+    can see it on the scheme) works well, but I am not sure for now is it
+    optimal, may be there could be some better solution.
+  2. Despite SOS IIR architectures offer more possipilities to implement
+    high-order IIRs due to it's numerical stability, it was discovered that with
+    low precision integer data (say, 24 bits) it is senseless anyway. For
+    example, target 24-bit data parameters (audio) only allows to make filter
+    with order of 8. And it's wery noisy due to big roundings of it's small
+    coefficients and give output about -30 dB.
+  3. Previous points make it interesting to research internal precision
+     increasing effects. Yes, having fixed bit width output ports we are going
+     to need to round data anyway, but at least a's and b's with higher
+     precision togeter will work better, because they are has some sort of
+     mutual compensation I believe..
+
+TDOD:
+  1. Try other approximations (chebyshev, etc..)
+  2. Try to increase internal precision (see insights 3.)
+
 Particular implementations are:
 
-#### Looped sos IIR ####
+##### Looped SOS IIR #####
 
 Status:
   * Done
@@ -168,7 +217,7 @@ Usage: May be used with iir.sv wrapper and "LOOPED_SOS" value for ARCHITECTURE p
 
 More details: rtl/looped_sos_iir.sv file annotation
 
-#### Cascaded sos IIR ####
+##### Cascaded SOS IIR #####
 
 Status:
   * In progress...
@@ -208,6 +257,7 @@ required data and parameters were preliminary generated.
 
 Available wrapper programs:
   * iir_test.py
+  * ram_fir_test.py
 
 Workflow is similar to filter_design.py. Open file, edit parameters with obvious
 meanings, wait for the results.
