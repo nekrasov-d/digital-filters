@@ -1,9 +1,9 @@
 # digital-filters #
 
-RTL (Verilog) digital filter library based on Python scipy library output. Yet.
-Maybe I will add filters, based on some other filter design tool outputs later,
-or maybe some filters that won't require some offline calculated stuff and work
-as is (adaptive filters, for expample).
+RTL (SystemVerilog) digital filter library based on Python scipy library output
+(mostly). Maybe I will add filters, based on some other filter design tool outputs
+later, or maybe some filters that won't require some offline calculated stuff and
+work as is (adaptive filters, for expample).
 
 But currently the workflow is like this:
 
@@ -12,7 +12,7 @@ But currently the workflow is like this:
   2. Run filter_design.py
   3. If it was successfull, then some output files (verilog headers/ memory init
      files) were generated. Put them into project any way you like.
-  4. Synthesize design.
+  4. Synthesize the design.
 
 The routine might be different for different filters or different architectures,
 so I will do more detailed description for each filter in particular.
@@ -42,7 +42,7 @@ Goals:
 
 ### filter_design.py ###
 
-All the dessigns here (so far) require some initializing stuff. This program
+Most of the dessigns here (so far) require some initializing stuff. This program
 is supposed to generate all this stuff. It doesn't have any command line
 arguments. To use it you need to edit it. Find "Conrol point" section in the
 main loop. Parameter names are self-documented. Select filter type, band, etc.
@@ -59,8 +59,8 @@ Finite impulse response filters
 #### boxcar ####
 
 Status:
-  * Done
-  * Verified in hardware
+  - [x] Done
+  - [x] Verified in hardware
 
 The most trivial filter here, so simple I even did not simulate it. You just
 can't fail such simple design.
@@ -76,9 +76,9 @@ bitshift.
 #### RAM FIR ####
 
 Status:
-  * Done
-  * Verified in simulation with many different parameters (coverage % is unknown)
-  * Verified in hardware
+  - [x] Done
+  - [x] Verified in simulation with many different parameters (coverage % is unknown)
+  - [x] Verified in hardware
 
 A simple finity impulse response filter that utilizes typical FPGA block RAM
 feature: ability to give old value from memory cell in the same clock cycle
@@ -109,6 +109,9 @@ Verification:
 ### IIR ###
 
 Infinity impulse response filters
+
+Research backlog:
+  - [Towards Hardware IIR Filters Computing Just Right: Direct Form I Case Study](https://hal.science/hal-01561052/)
 
 #### SOS IIR ####
 
@@ -190,16 +193,20 @@ Insights:
 
 TDOD:
   1. Try other approximations (chebyshev, etc..)
-  2. Try to increase internal precision (see insights 3.)
+  2. <strike>Try to increase internal precision (see insights 3.)</strike>
+  Actually, I see it pointless, because we might increase input bitwidth right
+  before filter and then decrease it after width rounding. It should have the
+  same effect as the increasing of internal bitwidth, but without making RTL
+  code more complex
 
 Particular implementations are:
 
 ##### Looped SOS IIR #####
 
 Status:
-  * Done
-  * Verified in simulation with many different parameters (coverage % is unknown)
-  * Verified in hardware
+  - [x] Done
+  - [x] Verified in simulation with many different parameters (coverage % is unknown)
+  - [x] Verified in hardware
 
 This architecture shares same memory among sections. Calculation results inside any section
 (z-1 and z-2 registers) are saved inside memory (not supposed to be big because
