@@ -19,18 +19,16 @@ so I will do more detailed description for each filter in particular.
 
 Designs:
 
-  * FIR
-    - boxcar (rtl/boxcar_filter.sv) | hardware ok
-    - RAM FIR (rtl/ram_fir.sv) | sim/hardware ok
-  * IIR
-    - second order sections arch
-      - looped SOS IIR (rtl/looped_sos_iir.sv)     | sim/hardware ok
-      - cascaded SOS IIR (rtl/cascaded_sos_iir.sv) | in progress...
-    - monolythic arch
-      - in plan...
+Type | Subtype         | Design           | Planned | In progress | Done | Simulation | Hardware
+-----| --------------- | ---------------- | ------- | ----------- | ---- | ---------- | --------
+FIR  |                 | boxcar           |         |             |  v   |            |    v
+FIR  |                 | RAM FIR          |         |             |  v   |     v      |    v
+IIR  | SOS/Direct form | Looped SOS IIR   |         |             |  v   |     v      |    v
+IIR  | SOS/Direct form | Cascaded SOS IIR |         |      v      |      |            |
+IIR  | Monolythic      | Monolythic IIR   |    v    |             |      |            |
+
 
 Goals:
-
   1. Fun, research
   2. I actually use some of these filters in real hardware.
   3. I would be happy if someone else finds it well done and useful and takes
@@ -62,6 +60,11 @@ Status:
   - [x] Done
   - [x] Verified in hardware
 
+Source files:
+|          file        |  comment  |
+| -------------------- | --------- |
+| rtl/boxcar_filter.sv | top level |
+
 The most trivial filter here, so simple I even did not simulate it. You just
 can't fail such simple design.
 
@@ -79,6 +82,13 @@ Status:
   - [x] Done
   - [x] Verified in simulation with many different parameters (coverage % is unknown)
   - [x] Verified in hardware
+
+Source files:
+|          file        |  comment  |
+| -------------------- | --------- |
+|     rtl/ram_fir.sv   | top level |
+|     rtl/ram.sv       |           |
+|     rtl/rom.sv       |           |
 
 A simple finity impulse response filter that utilizes typical FPGA block RAM
 feature: ability to give old value from memory cell in the same clock cycle
@@ -208,6 +218,14 @@ Status:
   - [x] Verified in simulation with many different parameters (coverage % is unknown)
   - [x] Verified in hardware
 
+Source files:
+|          file         |     comment      |
+| --------------------- | ---------------- |
+| rtl/iir.sv            | optional wrapper |
+| rtl/looped_sos_iir.sv | top level        |
+| rtl/ram.sv            |                  |
+| rtl/sat.sv            |                  |
+
 This architecture shares same memory among sections. Calculation results inside any section
 (z-1 and z-2 registers) are saved inside memory (not supposed to be big because
 amount of sections can't be big) and re-used for the next sample.
@@ -228,6 +246,14 @@ More details: rtl/looped_sos_iir.sv file annotation
 
 Status:
   * In progress...
+
+Source files:
+|            file         |     comment      |
+| ----------------------- | ---------------- |
+| rtl/iir.sv              | optional wrapper |
+| rtl/cascaded_sos_iir.sv | top level        |
+| rtl/ram.sv              |                  |
+| rtl/sat.sv              |                  |
 
 The same as looped sos iir, but sections don't share resources. Since this,
 filter may work as a pipeline and process 1 sample per clock cycle (with latency
