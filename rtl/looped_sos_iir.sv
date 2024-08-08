@@ -82,8 +82,8 @@ module looped_sos_iir #(
   parameter                         ORDER        = 16,
   parameter                         DW           = 16, // Data width
   parameter                         CW           = 16, // Coefficints width
-  parameter                         OB           = 2,  // Overhead bits. See annotation
-  parameter                         CW_AMOUNT    = (ORDER/2)*2 + 3, // Do not override!
+  parameter                         OB           = 0,  // Overhead bits. See annotation
+  parameter                         CW_AMOUNT    = $ceil(ORDER/2)*2 + 3, // Do not override!
   parameter [CW_AMOUNT-1:0][CW-1:0] COEFFICIENTS = '{default:0},
   parameter                         RAMSTYLE     = "logic"
 ) (

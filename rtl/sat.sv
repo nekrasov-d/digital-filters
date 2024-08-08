@@ -24,7 +24,7 @@
  * ---------------------------------------------------------------------------------
  *
  * Simple combinational saturation module. Expected to be nested:
- *  `include "sat.sv" 
+ *  `include "sat.sv"
  *
  * XXX: nested module feature is not supported in quartus
  *
